@@ -5,7 +5,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 # 员工账号信息模型
 class User(models.Model):
-    username = models.CharField(max_length=50)  # 员工账号
+    username = models.CharField(max_length=50,unique=True)  # 员工账号
     nickname = models.CharField(max_length=50)  # 昵称
     password_hash = models.CharField(max_length=100)  # 密码
     password_salt = models.CharField(max_length=50)  # 密码干扰值
@@ -32,7 +32,9 @@ class Shop(models.Model):
     
     def toDict(self):
         shopname = self.name.split("-")
-        return {'id':self.id,'name':shopname[0],'shop':shopname[1],'cover_pic':self.cover_pic,'banner_pic':self.banner_pic,'address':self.address,'phone':self.phone,'status':self.status,'create_at':self.create_at.strftime('%Y-%m-%d %H:%M:%S'),'update_at':self.update_at.strftime('%Y-%m-%d %H:%M:%S')}
+        name = shopname[0]
+        shop = shopname[1] if len(shopname) > 1 else ""
+        return {'id':self.id,'name':name,'shop':shop,'cover_pic':self.cover_pic,'banner_pic':self.banner_pic,'address':self.address,'phone':self.phone,'status':self.status,'create_at':self.create_at.strftime('%Y-%m-%d %H:%M:%S'),'update_at':self.update_at.strftime('%Y-%m-%d %H:%M:%S')}
 
     class Meta:
         db_table = "shop"  # 更改表名
