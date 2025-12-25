@@ -1,241 +1,178 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>点餐系统</title>
-    <link rel="stylesheet" href="{% static 'web/css/bootstrap.css'%}">
-    <link rel="stylesheet" href="{% static 'web/css/common.css'%}">
-    <style type="text/css">
-        body{min-height:2000px;padding-top:70px;}
+    <title>订单中心</title>
+    <link rel="stylesheet" href="{% static 'web/css/common.css' %}">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .page-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+        .panel { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+        .panel-head { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .panel-title { font-size: 18px; font-weight: bold; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        /* 表格样式 */
+        .modern-table { width: 100%; border-collapse: collapse; }
+        .modern-table th { background: #f8f9fa; padding: 15px; text-align: left; font-size: 14px; color: #666; font-weight: 600; }
+        .modern-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+        .modern-table tr:hover { background: #fcfcfc; }
+        
+        /* 状态标签 */
+        .badge { padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+        .bg-green { background: #e8f5e9; color: #2e7d32; }
+        .bg-red { background: #ffebee; color: #c62828; }
+        .bg-yellow { background: #fff3e0; color: #ef6c00; }
+        
+        /* 按钮组 */
+        .btn-mini { padding: 5px 10px; border-radius: 4px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 12px; margin-right: 5px; }
+        .btn-mini:hover { background: #f5f5f5; color: var(--primary); border-color: var(--primary); }
+        
+        /* 分页 */
+        .pagination { padding: 20px; display: flex; justify-content: flex-end; gap: 5px; list-style: none;}
+        .pagination a { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #666; }
+        .pagination .active a { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        .navbar-default{background-color:#ff8800;border-color:#e7e7e7;}
-        .navbar-default .navbar-brand{color:#fff;}
-        .navbar-default .navbar-nav > li > a,.navbar-default .navbar-nav > li > a:visited {
-            color: #fff;
-            width:100px;
-            font-size:14px;
-            text-align:center;
-        }
-        .navbar-default .navbar-nav > .active > a,.navbar-default .navbar-nav > .active > a:visited,.navbar-default .navbar-nav li a:hover,.navbar-default .navbar-nav > .active > a:hover,.navbar-default .navbar-nav li a:active {
-            color:#fff;
-            background-color: #FF4500;
-            width:100px;
-            font-size:14px;
-            text-align:center;
-        }
-
-        table tr td{font-size:11px;} 
-        table tr td.price{color:red;}
-        table tr td.num span{color:red;padding:0px 5px}
-        table tr td.num i{border-width:0px;background-color:#ddd;}  
-
-        div.shoplist div.bn{font-size:12px;line-height:25px;}
-        div.shoplist div.bn span.price{color:red;}
-
-        .container .panel .panel-heading{padding:0px 15px;line-height:40px;}
-        .container .panel .panel-heading a.btn{margin-top:5px;width:100px;float:right}
-
-        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-            z-index: 3;
-            color: #fff;
-            cursor: default;
-            background-color: #ff8800;
-            border-color: #ff8800;
-        }
+        /* 模态框 */
+        .modal-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999; }
+        .modal-box { background: #fff; width: 600px; max-height: 80vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; animation: popIn 0.3s; }
+        .modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: bold; display: flex; justify-content: space-between; }
+        .modal-body { padding: 20px; overflow-y: auto; }
+        .close-btn { cursor: pointer; font-size: 20px; color: #999; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">
-            <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span> <span style="font-weight:bold;">{{request.session.shopinfo.name}}</span><span style="font-size:14px;">（{{request.session.shopinfo.shop}}）</span></a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="{% url 'web_index'%}">堂吃点餐</a></li>
-            <li {% if request.GET.status == '1' %}class="active"{% endif %}><a href="{% url 'web_orders_index' 1 %}?status=1">当前订单</a></li>
-            <li {% if request.GET.status != '1' %}class="active"{% endif %}><a href="{% url 'web_orders_index' 1 %}?status=3">历史订单</a></li>
-            <li {% if request.GET.status == '2' %}class="active"{% endif %}><a href="{% url 'web_orders_index' 1 %}?status=2">无效订单</a></li>
+    <div id="app">
+        <header class="app-header">
+            <div class="brand">
+                <img src="{% static 'uploads/shop/' %}{{ request.session.shopinfo.cover_pic }}" 
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"
+                     onerror="this.src='https://placehold.co/40x40?text=Logo'"> 
+                     <span>{{request.session.shopinfo.name}}</span>
+                <span style="font-size:12px; color:#999; margin-left:10px">{{request.session.shopinfo.shop}}</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{% url 'web_index'%}">堂食点餐</a>
+                <a href="{% url 'web_orders_index' 1 %}?status=1" class="{% if request.GET.status == '1' %}active{% endif %}">当前订单</a>
+                <a href="{% url 'web_orders_index' 1 %}?status=3" class="{% if request.GET.status == '3' %}active{% endif %}">历史订单</a>
+                <a href="{% url 'web_logout' %}">退出</a>
+            </nav>
+        </header>
 
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">
-                    <span class="glyphicon glyphicon-user" aria-hidden="true"> {{request.session.webuser.nickname}}</a></li>
-            <li><a href="{% url 'web_logout' %}">退出</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-
-    <div class="container">
-        <div class="col-md-12">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 订 单 列 表
-                    <a type="button" href="{{url}}"  class="btn btn-warning btn-sm">刷 &nbsp; 新</a>
+        <div class="page-container">
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">订单管理</div>
+                    <a href="{{url}}" class="btn-mini">🔄 刷新列表</a>
                 </div>
-                <table class="table table-striped">
+                
+                <table class="modern-table">
+                    <thead>
                         <tr>
-                            <th width="60">订单号</th>
-                            <th>会员</th>
-                            <th>操作员</th>
-                            <th>金额</th>
-                            <th>付款方式</th>
-                            <th>订单状态</th>
-                            <th>支付状态</th>
-                            <th>下单时间</th>
+                            <th>ID</th>
+                            <th>顾客/操作员</th>
+                            <th>总金额</th>
+                            <th>状态</th>
+                            <th>支付</th>
+                            <th>时间</th>
                             <th>操作</th>
                         </tr>
+                    </thead>
+                    <tbody>
                         {% for vo in orderslist %}
-                        <tr class="oid{{vo.id}}">
-                            <td>{{ vo.id }}</td>
-                            <td>{{vo.membername}}</td>
-                            <td>{{vo.nickname}}</td>
-                            <td class="price">{{vo.money}}</td>
-                            <td>微信</td> 
+                        <tr id="tr-{{vo.id}}">
+                            <td>#{{ vo.id }}</td>
                             <td>
+                                <div>{{vo.membername}}</div>
+                                <div style="font-size:12px; color:#999">操作: {{vo.nickname}}</div>
+                            </td>
+                            <td style="color:#e74c3c; font-weight:bold">¥{{vo.money}}</td>
+                            <td>
+                                {% if vo.status == 1 %}<span class="badge bg-yellow">制作中</span>
+                                {% elif vo.status == 2 %}<span class="badge bg-red">无效</span>
+                                {% elif vo.status == 3 %}<span class="badge bg-green">已完成</span>
+                                {% else %}<span class="badge">未知</span>{% endif %}
+                            </td>
+                            <td>
+                                {% if vo.payment_status == 1 %}<span style="color:#e74c3c">未支付</span>
+                                {% elif vo.payment_status == 2 %}<span style="color:#2ecc71">已支付</span>
+                                {% elif vo.payment_status == 3 %}<span style="color:#999">已退款</span>{% endif %}
+                            </td>
+                            <td style="color:#999; font-size:12px">{{ vo.create_at|date:'Y-m-d H:i' }}</td>
+                            <td>
+                                <button class="btn-mini" @click="showDetail({{vo.id}})">详情</button>
                                 {% if vo.status == 1 %}
-                                  <span style="color:green">制作中</span>
-                                {% elif vo.status == 2 %}
-                                  <span style="color:red">无效</span>
-                                {% elif vo.status == 3 %}
-                                  <span style="color:red">已完成</span>
-                                {% else %}
-                                  <span style="color:red">未知状态</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if vo.payment_status == 1 %}
-                                  <span style="color:red">未支付</span>
-                                {% elif vo.payment_status == 2 %}
-                                  <span style="color:green">已支付</span>
-                                {% elif vo.payment_status == 3 %}
-                                  <span style="color:red">已退款</span>
-                                {% else %}
-                                  <span style="color:red">未知状态</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ vo.create_at|date:'Y-m-d H:i:s' }}</td>
-                            <td>
-                                <button type="button" onclick="doShow({{vo.id}})" class="btn btn-warning btn-xs" role="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> 详情</button>
-                                {% if vo.status == 1%} 
-                                <button type="button" onclick="doChangeStatus({{vo.id}},3)" class="btn btn-info btn-xs" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 完成</button> 
-                                <button type="button" onclick="doChangeStatus({{vo.id}},2)" class="btn btn-danger btn-xs" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 删除</button>
+                                <button class="btn-mini" @click="changeStatus({{vo.id}}, 3)">完成</button>
+                                <button class="btn-mini" style="color:red; border-color:#fadbd8" @click="changeStatus({{vo.id}}, 2)">删除</button>
                                 {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
+                    </tbody>
                 </table>
-                <div class="panel-footer" style="height:50px">
-                    <div style="width:120px;float:left;margin:5px 0px;">合计：<span style="color:red;font-weight:bold;">{{maxpages}}</span> 页</div>
-                    <nav aria-label="Page navigation" class="text-right">
-                      <ul class="pagination" style="margin:0px;">
-                        <li><a href="{% url 'web_orders_index' pIndex|add:-1 %}"><span aria-hidden="true">&laquo;</span></a></li>
-                        {% for p in plist %}
-                          <li {% if pIndex == p %}class="active"{% endif %}><a href="{% url 'web_orders_index' p %}">{{ p }}</a></li>
-                        {% endfor %}
-                        <li><a href="{% url 'web_orders_index' pIndex|add:1 %}"><span aria-hidden="true">&raquo;</span></a></li>
-                      </ul>
-                    </nav>
+
+                <ul class="pagination">
+                    <li><a href="{% url 'web_orders_index' pIndex|add:-1 %}">&laquo;</a></li>
+                    {% for p in plist %}
+                    <li class="{% if pIndex == p %}active{% endif %}"><a href="{% url 'web_orders_index' p %}">{{ p }}</a></li>
+                    {% endfor %}
+                    <li><a href="{% url 'web_orders_index' pIndex|add:1 %}">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal-mask" v-if="showModal" @click.self="showModal = false">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <span>订单详情</span>
+                    <span class="close-btn" @click="showModal = false">&times;</span>
                 </div>
+                <div class="modal-body" v-html="detailContent"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">订单详情</h4>
-          </div>
-          <div class="modal-body">
-            <table class="table table-hover">
-                <tr>
-                    <th>序号</th>
-                    <th>菜品名称</th>
-                    <th>单价</th>
-                    <th>数量</th>
-                    <th>小计</th>
-                    <th>状态</th>
-                    <th>操作</th>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>梅菜扣肉+番茄鸡蛋</td>
-                    <td>25</td>
-                    <td>2</td>
-                    <td>50</td>
-                    <td>正常</td>
-                    <td><button>删除</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>肉沫酸豆角</td>
-                    <td>15</td>
-                    <td>1</td>
-                    <td>15</td>
-                    <td>正常</td>
-                    <td><button>删除</button></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>红烧肉</td>
-                    <td>18</td>
-                    <td>1</td>
-                    <td>18</td>
-                    <td>正常</td>
-                    <td><button>删除</button></td>
-                </tr>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <!--button type="button" class="btn btn-primary">保存</button-->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="{% static 'web/js/jquery.min.js'%}"></script>
-    <script src="{% static 'web/js/bootstrap.min.js'%}"></script>
-    <script type="text/javascript">
-        function doShow(id){
-            $.ajax({
-                type:'get',
-                url:"{% url 'web_orders_detail' %}",
-                dataType:'text',
-                data:{oid:id},
-                async: false,
-                success:function(res){
-                    $("#myModal div.modal-body").empty().append(res);
-                    $('#myModal').modal({keyboard:false})
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            delimiters: ['[[', ']]'],
+            data() {
+                return {
+                    showModal: false,
+                    detailContent: '加载中...'
+                }
+            },
+            methods: {
+                showDetail(oid) {
+                    this.showModal = true;
+                    this.detailContent = '<div style="text-align:center;padding:20px;">加载中...</div>';
+                    // 请求 detail.html
+                    axios.get("{% url 'web_orders_detail' %}", { params: { oid: oid } })
+                        .then(res => {
+                            this.detailContent = res.data;
+                        })
+                        .catch(err => {
+                            this.detailContent = '加载失败';
+                        });
                 },
-            });
-        }
+                changeStatus(oid, status) {
+                    const tips = { 2: "确定删除这个订单吗？", 3: "确定完成这个订单吗？" };
+                    if (!confirm(tips[status])) return;
 
-        function doChangeStatus(id,s){
-            var info = ["","","确定要删除订单吗？","确定要完成此订单吗？"];
-            if(window.confirm(info[s])){
-                $.get("{% url 'web_orders_status' %}",{oid:id,status:s},function(data){
-                    if(data == "Y"){
-                        $("tr.oid"+id).remove();
-                    }else{
-                        alert("订单处理失败！");
-                    }
-                },'text');
+                    axios.get("{% url 'web_orders_status' %}", { params: { oid: oid, status: status } })
+                        .then(res => {
+                            if (res.data === "Y") {
+                                // 简单刷新页面
+                                window.location.reload();
+                            } else {
+                                alert("操作失败");
+                            }
+                        });
+                }
             }
-        }
+        }).mount('#app');
     </script>
 </body>
 </html>

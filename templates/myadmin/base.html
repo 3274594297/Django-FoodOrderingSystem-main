@@ -200,29 +200,42 @@
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">主要导航</li>
-        <!-- 导航列表，你可以自行更改图标 -->
-        <li class="active"><a href="{% url 'myadmin_index' %}"><i class="fa fa-home"></i> <span>首页</span></a></li>
-
-        <li><a href="{% url 'myadmin_user_index' 1 %}"><i class="fa fa-users"></i> <span>员工管理</span></a></li>
-        <li><a href="{% url 'myadmin_shop_index' 1%}"><i class="fa fa-sitemap"></i> <span>店铺管理</span></a></li>
-        <li class="treeview">
-          <a href="category.html"><i class="fa fa-cutlery"></i> <span>菜品管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+      
+        <li class="{% if request.path == '/myadmin/' or request.path == '/myadmin' %}active{% endif %}">
+          <a href="{% url 'myadmin_index' %}"><i class="fa fa-home"></i> <span>首页</span></a>
+        </li>
+      
+        <li class="{% if '/user/' in request.path %}active{% endif %}">
+          <a href="{% url 'myadmin_user_index' 1 %}"><i class="fa fa-users"></i> <span>员工管理</span></a>
+        </li>
+      
+        <li class="{% if '/shop/' in request.path %}active{% endif %}">
+          <a href="{% url 'myadmin_shop_index' 1 %}"><i class="fa fa-sitemap"></i> <span>店铺管理</span></a>
+        </li>
+      
+        <li class="treeview {% if '/category/' in request.path or '/product/' in request.path %}active menu-open{% endif %}">
+          <a href="#">
+            <i class="fa fa-cutlery"></i> <span>菜品管理</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
           </a>
-          <ul class="treeview-menu">
-            <li><a href="{% url 'myadmin_category_index' 1 %}"> <i class="fa fa-circle-o"></i> 菜品分类</a></li>
-            <li><a href="{% url 'myadmin_product_index' 1 %} "> <i class="fa fa-circle-o"></i> 菜品信息</a></li>
+          <ul class="treeview-menu" style="{% if '/category/' in request.path or '/product/' in request.path %}display:block;{% endif %}">
+            <li class="{% if '/category/' in request.path %}active{% endif %}">
+              <a href="{% url 'myadmin_category_index' 1 %}"><i class="fa fa-circle-o"></i> 菜品分类</a>
+            </li>
+            <li class="{% if '/product/' in request.path %}active{% endif %}">
+              <a href="{% url 'myadmin_product_index' 1 %}"> <i class="fa fa-circle-o"></i> 菜品信息</a>
+            </li>
           </ul>
         </li>
-        <li><a href="{% url 'myadmin_order_index' 1 %}"><i class="fa fa-shopping-cart"></i> <span>订单管理</span></a></li>
-        <li><a href="{% url 'myadmin_member_index' 1 %}"><i class="fa fa-user"></i> <span>会员管理</span></a></li>
-        <li><a href="#"><i class="fa fa-key"></i> <span>权限管理</span></a></li>
-        <li><a href="#"><i class="fa fa-gear"></i> <span>系统配置</span></a></li>
-        <li><a href="#"><i class="fa fa-unlock-alt"></i> <span>认证体系</span></a></li>
-      </ul>
-      <!-- /.sidebar-menu -->
+      
+        <li class="{% if '/order/' in request.path %}active{% endif %}">
+          <a href="{% url 'myadmin_order_index' 1 %}"><i class="fa fa-shopping-cart"></i> <span>订单管理</span></a>
+        </li>
+      
+        <li class="{% if '/member/' in request.path %}active{% endif %}">
+          <a href="{% url 'myadmin_member_index' 1 %}"><i class="fa fa-user"></i> <span>会员管理</span></a>
+        </li>
+      </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->
   </aside>
@@ -283,7 +296,7 @@
 <!-- 此处可以添加SimLoopl和FastClick插件，用于增强用户体验。 -->
 
 <script type="text/javascript">
-  //自定义一个用于实现Ajax信息删除的函数
+  // --- 1. 原有的删除函数 (保留) ---
   function doDelete(del_url){
     Modal.confirm({
       msg: "确定要删除吗？",
@@ -291,7 +304,7 @@
       btnok: '确定',
       btncl:'取消'
     }).on(function (e){
-      if(e){ //判断是否点击了确定按钮
+      if(e){ 
         $.ajax({
           type:'get',
           url:del_url,
@@ -299,12 +312,13 @@
           async: false,
           success:function(res){
             Modal.alert({msg:res.info, title:' 信息提示',btnok: '确定',btncl:'取消'});
-            window.location.reload(); //刷新当前页面.
+            window.location.reload(); 
           },
         });
       }
     });
   }
+
 </script>
 {% block loadjavascript %}
 <!-- 此处可加载独立的javascript程序 -->

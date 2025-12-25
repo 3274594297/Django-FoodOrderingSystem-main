@@ -86,20 +86,20 @@ class Member(models.Model):
         db_table = "member"  # 更改表名
         
 
-# 后台订单信息模型
-class Order(models.Model):
-    shop_id = models.IntegerField()  # 店铺id
-    order_id = models.CharField(max_length=255)  # 订单编号
-    user_id = models.IntegerField()  # 员工id
-    status = models.IntegerField(default=1)        #状态:1已完成/2待做/3取消订单/9删除
-    total_price = models.FloatField()  # 订单总金额
-    create_at = models.DateTimeField(default=datetime.now)  # 下单时间
+# # 后台订单信息模型
+# class Order(models.Model):
+#     shop_id = models.IntegerField()  # 店铺id
+#     order_id = models.CharField(max_length=255)  # 订单编号
+#     user_id = models.IntegerField()  # 员工id
+#     status = models.IntegerField(default=1)        #状态:1已完成/2待做/3取消订单/9删除
+#     total_price = models.FloatField()  # 订单总金额
+#     create_at = models.DateTimeField(default=datetime.now)  # 下单时间
     
-    def toDict(self):
-        return {'shop_id':self.shop_id, 'order_id':self.order_id, 'user_id':self.user_id, 'status':self.status, 'total_price':self.total_price, 'create_at':self.create_at}
+#     def toDict(self):
+#         return {'shop_id':self.shop_id, 'order_id':self.order_id, 'user_id':self.user_id, 'status':self.status, 'total_price':self.total_price, 'create_at':self.create_at}
     
-    class Meta:
-        db_table = "order"
+#     class Meta:
+#         db_table = "order"
         
         
 # 订单模型
