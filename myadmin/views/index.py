@@ -4,12 +4,34 @@ from django.shortcuts import redirect
 from django.urls import reverse
 import hashlib
 
-from myadmin.models import User
+from myadmin.models import User, Shop, Orders, Member, Product
 
 
 def index(request):
-    return render(request, "myadmin/index/index.html")
-# Create your views here.
+    ''' 管理后台首页 '''
+    # 1. 统计商铺总量 (排除已删除状态9)
+    shop_count = Shop.objects.filter(status__lt=9).count()
+    
+    # 2. 统计菜品总量 (排除已删除状态9)
+    product_count = Product.objects.filter(status__lt=9).count()
+    
+    # 3. 统计会员总量 (排除已删除状态9)
+    member_count = Member.objects.filter(status__lt=9).count()
+    
+    # 4. 统计新订单 (假设状态1为新订单/制作中)
+    order_count = Orders.objects.filter(status=1).count()
+
+    # 封装数据
+    context = {
+        "shop_count": shop_count,
+        "product_count": product_count,
+        "member_count": member_count,
+        "order_count": order_count,
+    }
+    
+    return render(request, "myadmin/index/index.html", context)
+
+
 
 # 管理员登录表单
 def login(request):

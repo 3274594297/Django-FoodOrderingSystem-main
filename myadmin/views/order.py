@@ -4,13 +4,14 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from datetime import datetime
 import time
-from myadmin.models import Member, Order
+from myadmin.models import Member, Orders
 
 
 # 浏览订单
 def index(request, pIndex):
-    omod = Order.objects
-    order_list = omod.filter(status__lt=9)
+    omod = Orders.objects
+    # 暂时改成这样试试，把 filter 去掉
+    order_list = omod.all().order_by("-id")
     kw = request.GET.get("keyword", None)
     mywhere =[]
     if kw:
@@ -20,13 +21,13 @@ def index(request, pIndex):
     pIndex = int(pIndex)
     page = Paginator(order_list,10)
     maxpages = page.num_pages
-    list2 = page.page(pIndex)
-    plist = page.page_range
-    
     if pIndex > maxpages:
         pIndex = maxpages
     elif pIndex < 1:
         pIndex = 1
+    list2 = page.page(pIndex)
+    plist = page.page_range
+    
         
     context = {"orderlist":list2,'plist':plist,'pIndex':pIndex,'maxpages':maxpages, 'mywhere':mywhere}
     return render(request, "myadmin/order/index.html", context)
