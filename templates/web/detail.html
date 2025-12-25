@@ -1,18 +1,27 @@
-<table class="table table-hover">
-    <tr>
-        <th>序号</th>
-        <th>菜品名称</th>
-        <th>单价</th>
-        <th>数量</th>
-        <th>小计</th>
-    </tr>
-    {% for vo in detaillist %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ vo.product_name }}</td>
-        <td>{{ vo.price }}</td>
-        <td>{{ vo.quantity }}</td>
-        <td>{% widthratio  vo.price 1 vo.quantity %}</td>
-    </tr>
-    {% endfor %}
+{% load static %}
+<table class="modern-table" style="border:none;">
+    <thead>
+        <tr style="background:#fff; border-bottom:2px solid #eee;">
+            <th style="width:50px">#</th>
+            <th>菜品名称</th>
+            <th style="text-align:center">单价</th>
+            <th style="text-align:center">数量</th>
+            <th style="text-align:right">小计</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vo in detaillist %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <div style="font-weight:bold">{{ vo.product_name }}</div>
+            </td>
+            <td style="text-align:center; color:#999">¥{{ vo.price }}</td>
+            <td style="text-align:center; font-weight:bold">x {{ vo.quantity }}</td>
+            <td style="text-align:right; color:#e74c3c; font-weight:bold">
+                ¥{% widthratio vo.price 1 vo.quantity %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>

@@ -1,66 +1,114 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>点餐系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 点餐系统</title>
     <link rel="stylesheet" href="{% static 'web/css/common.css' %}">
-    <link rel="stylesheet" href="{% static 'web/css/bootstrap.css' %}">
+    <style>
+        body {
+            background: url("{% static 'web/images/bg-food.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        /* 磨砂玻璃卡片 */
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-title { font-size: 24px; font-weight: bold; color: var(--text-main); margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background: #f9f9f9;
+        }
+        .input-field:focus { border-color: var(--primary); background: #fff; }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-login:hover { background: #e65a00; transform: translateY(-2px); }
+        .verify-box { display: flex; gap: 10px; align-items: center; }
+        .verify-img { height: 44px; border-radius: 6px; cursor: pointer; border: 1px solid #eee; }
+        .alert-msg {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #e74c3c;
+            background: #fdecea;
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="form-heading">login Form</h1>
-        <div class="login-form">
-            <div class="main-div">
-                <div class="panel">
-                    <h2 style="font-size:26px;">点 餐 系 统 登 录 页 面</h2>
-                </div>
-                <form action="{% url 'web_dologin' %}" method="post">
-                    {% csrf_token %}
 
-                    <div class="form-group">
-                        <select name="shop_id" class="form-control">
-                            <option value="0"> - - 请选择商铺名称 - - </option>
-                            {% for shop in shoplist %}
-                            <option value="{{ shop.id }}">{{ shop.name }}</option>
-                            {% endfor %}
-
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="username" class="form-control"  placeholder="登录账号">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" name="pass" class="form-control" placeholder="登录密码">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="code" style="display:inline;width:120px;float:left;" class="form-control" placeholder="验证码">
-                        <img src="{% url 'web_verify'%}" onclick="this.src='{% url 'web_verify' %}?sn='+Math.random()" style="float:right;margin:10px 20px;" />
-                    </div>
-
-                    <button type="submit" style="margin-top:10px" class="btn btn-primary">登录</button>
-
-                    <div class="form-group">
-                        <p class="login-box-msg" style="color:red">
-                            {% if request.GET.typeinfo == '1' %}
-                                请选择您所在的商铺！
-                            {% elif request.GET.typeinfo == '2' %}
-                                验证码错误！
-                            {% elif request.GET.typeinfo == '3' %}
-                                登录账号不存在！
-                            {% elif request.GET.typeinfo == '4' %}
-                                此用户非管理账号！
-                            {% elif request.GET.typeinfo == '5' %}
-                                登录密码错误！
-                            {% endif %}
-                        </p>
-                    </div>
-                </form>
+    <div class="login-card">
+        <div class="login-title">🍽️ 门店系统登录</div>
+        
+        <form action="{% url 'web_dologin' %}" method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <select name="shop_id" class="input-field">
+                    <option value="0">请选择商铺</option>
+                    {% for shop in shoplist %}
+                    <option value="{{ shop.id }}">{{ shop.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        </div>
+
+            <div class="form-group">
+                <input type="text" name="username" class="input-field" placeholder="请输入账号">
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="pass" class="input-field" placeholder="请输入密码">
+            </div>
+
+            <div class="form-group verify-box">
+                <input type="text" name="code" class="input-field" style="flex:1" placeholder="验证码">
+                <img src="{% url 'web_verify'%}" onclick="this.src='{% url 'web_verify' %}?sn='+Math.random()" class="verify-img" title="点击刷新"/>
+            </div>
+
+            <button type="submit" class="btn-login">立即登录</button>
+
+            {% if request.GET.typeinfo %}
+            <div class="alert-msg">
+                {% if request.GET.typeinfo == '1' %}⚠️ 请选择所在的商铺
+                {% elif request.GET.typeinfo == '2' %}⚠️ 验证码错误
+                {% elif request.GET.typeinfo == '3' %}⚠️ 账号不存在
+                {% elif request.GET.typeinfo == '4' %}⚠️ 此用户非管理账号
+                {% elif request.GET.typeinfo == '5' %}⚠️ 密码错误
+                {% endif %}
+            </div>
+            {% endif %}
+        </form>
     </div>
 
-    <script src="{% static 'web/js/jquery.min.js'%}"></script>
-    <script src="{% static 'web/js/bootstrap.min.js'%}"></script>
 </body>
 </html>

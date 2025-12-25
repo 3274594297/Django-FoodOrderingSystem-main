@@ -1,169 +1,229 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <link rel='shortcut icon' href="{% static 'web/images/favicon.ico' %}" type="image/x-icon"/>
     <meta charset="UTF-8">
-    <title>大堂点餐界面</title>
-    <link rel="stylesheet" href="{% static 'web/css/bootstrap.min.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能点餐系统</title>
+    
     <link rel="stylesheet" href="{% static 'web/css/common.css' %}">
-    <style type="text/css">
-        body{min-height:2000px;padding-top:70px;}
-
-        .navbar-default{background-color:#ff8800;border-color:#e7e7e7;}
-        .navbar-default .navbar-brand{color:#fff;}
-        .navbar-default .navbar-nav > li > a,.navbar-default .navbar-nav > li > a:visited {
-            color: #fff;
-            width:100px;
-            font-size:14px;
-            text-align:center;
-        }
-        .navbar-default .navbar-nav > .active > a,.navbar-default .navbar-nav > .active > a:visited,.navbar-default .navbar-nav li a:hover,.navbar-default .navbar-nav > .active > a:hover,.navbar-default .navbar-nav li a:active {
-            color:#fff;
-            background-color: #FF4500;
-            width:100px;
-            font-size:14px;
-            text-align:center;
-        }
-
-        table tr td{font-size:11px;} 
-        table tr td.price{color:red;}
-        table tr td.num span{color:red;padding:0px 5px}
-        table tr td.num i{border-width:0px;background-color:#ddd;}  
-
-        div.shoplist div.bn{font-size:12px;line-height:25px;}
-        div.shoplist div.bn span.price{color:red;}
-    </style>
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-      <!-- Fixed navbar -->
-      <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">
-              <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span> <span style="font-weight:bold;">{{request.session.shopinfo.name}}</span><span style="font-size:14px;">（{{request.session.shopinfo.shop}}）</span></a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'web_index'%}">堂吃点餐</a></li>
-                <li {% if request.GET.status == '1' %}class="active"{% endif %}><a href="{% url 'web_orders_index' 1 %}?status=1">当前订单</a></li>
-                <li {% if request.GET.status == '3' %}class="active"{% endif %}><a href="{% url 'web_orders_index' 1 %}?status=3">历史订单</a></li>
-                <li {% if request.GET.status == '2' %}class="active"{% endif %}><a href="{% url 'web_orders_index' 1 %}?status=2">无效订单</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="../navbar/">
-                      <span class="glyphicon glyphicon-user" aria-hidden="true"> {{request.session.webuser.nickname}}</a></li>
-              <li><a href="{% url 'web_logout' %}">退出</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </nav>
-  
-      <div class="container">
-          <div class="col-md-4">
-              <div class="panel panel-warning">
-                  <div class="panel-heading"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> 购 物 车</div>
-                  <table class="table table-striped">
-                          <tr>
-                              <th width="30">序</th>
-                              <th>菜品</th>
-                              <th width="72">数量</th>
-                              <th width="45">单价</th>
-                              <th>删除</th>
-                          </tr>
-                          {% for product in request.session.cartlist.values %}
-                          <tr>
-                              <td>{{forloop.counter}}</td>
-                              <td>{{product.name}}</td>
-                              <td class="num"><i onclick="window.location='{% url 'web_cart_change'%}?pid={{product.id}}&num={{product.num|add:-1}}'" class="btn btn-default btn-xs"> - </i><span>{{product.num}}</span><i onclick="window.location='{% url 'web_cart_change'%}?pid={{product.id}}&num={{product.num|add:1}}'"class="btn btn-default btn-xs"> + </i></td>
-                              <td class="price">{{product.price}}</td>
-                              <td><a href="{% url 'web_cart_delete' product.id %}" class="btn btn-danger btn-xs" role="button">删除</a></td>
-                          </tr>
-                          {% endfor %}
-                      </table>
-  
-                      <li class="list-group-item">
-                          <b>购买方式: &nbsp; </b>  
-                          <input type="radio" name="ptype" checked value="1"> 堂吃 &nbsp; 
-                          <input type="radio" name="ptype" value="2"> 打包 &nbsp; 
-                      </li>
-                      <li class="list-group-item">
-                          <b>支付方式: &nbsp; </b> 
-                          <input type="radio" name="bank" checked value="1"> 现金 &nbsp; 
-                          <input type="radio" name="bank" value="2"> 支付宝 &nbsp; 
-                          <input type="radio" name="bank" value="3"> 微信
-                      </li>
-  
-                      <div class="panel-footer" style="height:50px">
-                          <div style="width:120px;float:left;margin:5px 0px;">合计：￥<span style="color:red;font-weight:bold;">{{request.session.total_money}}</span> 元</div>
-                          <button type="button" onclick="window.location='{% url 'web_cart_clear' %}'" class="btn btn-warning" style="width:70px;float:left">清 &nbsp; 空</button>
-                          <button type="button" onclick="dosubmit()" class="btn btn-warning" style="width:80px;float:right">结 &nbsp; 算</button>
-                      </div>
-  
-              </div>
-          </div>
-          <div class="col-md-8">
-              <!--标签页内容-->
-              {% for key,category in categorylist %}
-              <h5 style="padding-bottom:9px;border-bottom:1px solid #eee;color:#BB3D00"><span class="glyphicon glyphicon-list" aria-hidden="true"> {{ category.name }}：</h5>
-              <div class="row shoplist">
-                  {% for product in category.pids %}
-                  <div class="col-sm-6 col-md-3">
-                      <div class="thumbnail">
-                        <img src="{% static 'uploads/product'%}/{{product.cover_pic}}" width="150" alt="...">
-                        <div class="caption">
-                          <h6>{{ product.name }}</h6>
-                          <div class="bn">￥<span class="price">{{ product.price }}</span>元</a>
-                          <a href="{% url 'web_cart_add' product.id %}" class="btn btn-warning btn-xs pull-right" role="button"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> 购买</a></div>
+    
+    <div id="app">
+        <header class="app-header">
+            <div class="brand">
+                <img src="{% static 'uploads/shop/' %}{{ request.session.shopinfo.cover_pic }}" 
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"
+                     onerror="this.src='https://placehold.co/40x40?text=Logo'"> 
+                     <span>{{request.session.shopinfo.name}}</span>
+                <span style="font-size:12px; color:#999; margin-left:10px">{{request.session.shopinfo.shop}}</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="active">堂食点餐</a>
+                <a href="{% url 'web_orders_index' 1 %}?status=1">当前订单</a>
+                <a href="{% url 'web_orders_index' 1 %}?status=3">历史订单</a>
+                <a href="{% url 'web_logout' %}">退出</a>
+            </nav>
+        </header>
+
+        <div class="main-container">
+            
+            <aside class="category-sidebar">
+                <a v-for="(cat, index) in categories" 
+                   :key="cat.id" 
+                   class="cat-item"
+                   :class="{ active: currentCategory === index }"
+                   @click="scrollToCategory(index)">
+                   [[ cat.name ]]
+                </a>
+            </aside>
+
+            <main class="product-area" id="productArea">
+                <div v-for="(cat, index) in categories" :key="cat.id" :id="'cat-' + index">
+                    <h3 class="category-title">[[ cat.name ]]</h3>
+                    <div class="product-grid">
+                        <div class="product-card" v-for="prod in cat.pids" :key="prod.id">
+                            <img :src="'/static/uploads/product/' + prod.cover_pic" class="p-img">
+                            <div class="p-info">
+                                <div class="p-name">[[ prod.name ]]</div>
+                                <div class="p-action">
+                                    <span class="p-price">¥[[ prod.price ]]</span>
+                                    <button class="btn-add" @click="addToCart(prod)">+</button>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                  </div>
-                  {% endfor %}
-              </div>
-              {% endfor %} 
-  
-          </div>
-      </div>
-  
-      <script src="{% static 'web/js/jquery.min.js'%}"></script>
-      <script src="{% static 'web/js/bootstrap.min.js'%}"></script>
+                    </div>
+                </div>
+            </main>
 
-      <script type="text/javascript">
-        function dosubmit(){
-            if($("table.table-striped tr").length==1){
-                alert("购物车没有菜品信息！");
-                return;
-            }
-            if(!window.confirm("确定要进行结算？")){
-                return;
-            }
-            var ptype = $("input[name='ptype']:checked").val();
-            var bank = $("input[name='bank']:checked").val();
-            $.ajax({
-                type:'get',
-                url:"{% url 'web_orders_insert' %}",
-                dataType:'text',
-                data:{ptype:ptype,bank:bank},
-                async: false,
-                success:function(res){
-                    if(res == "Y"){
-                        alert("订单添加成功！");
-                        window.location.href="{% url 'web_index'%}";
-                    }else{
-                        alert("订单处理失败！");
-                    }
+            <aside class="cart-panel">
+                <div class="cart-header">
+                    购物车 ([[ totalCount ]])
+                    <span style="float:right; font-size:12px; color:#999; cursor:pointer" @click="clearCart">清空</span>
+                </div>
+                
+                <div class="cart-list">
+                    <div v-if="cartList.length === 0" style="text-align:center; padding:40px; color:#ccc;">
+                        🛒 购物车是空的
+                    </div>
+                    <div class="cart-item" v-for="item in cartList" :key="item.id">
+                        <div>
+                            <div style="font-size:14px; font-weight:bold">[[ item.name ]]</div>
+                            <div style="font-size:12px; color:#999">¥[[ item.price ]]</div>
+                        </div>
+                        <div class="cart-control">
+                            <button class="btn-control" @click="changeNum(item, -1)">-</button>
+                            <span>[[ item.num ]]</span>
+                            <button class="btn-control" @click="changeNum(item, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-footer">
+                    <div style="margin-bottom: 15px;">
+                        <label><input type="radio" v-model="ptype" value="1"> 堂食</label> &nbsp;
+                        <label><input type="radio" v-model="ptype" value="2"> 打包</label>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label><input type="radio" v-model="bank" value="1"> 现金</label> &nbsp;
+                        <label><input type="radio" v-model="bank" value="3"> 微信</label>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:18px;">
+                        <span>合计</span>
+                        <span style="color:red; font-weight:bold">¥[[ totalPrice ]]</span>
+                    </div>
+                    <button class="btn-submit" @click="submitOrder">立即结算</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        const serverData = {
+            categories: [
+                {% for key, category in categorylist %}
+                {
+                    id: "{{ category.id }}",
+                    name: "{{ category.name }}",
+                    pids: [
+                        {% for product in category.pids %}
+                        {
+                            id: "{{ product.id }}",
+                            name: "{{ product.name }}",
+                            price: "{{ product.price }}",
+                            cover_pic: "{{ product.cover_pic }}"
+                        },
+                        {% endfor %}
+                    ]
                 },
-            });
-    
-        }
+                {% endfor %}
+            ],
+            initialCart: [
+                {% for product in request.session.cartlist.values %}
+                {
+                    id: "{{ product.id }}",
+                    name: "{{ product.name }}",
+                    price: "{{ product.price }}",
+                    num: {{ product.num }},
+                    cover_pic: "{{ product.cover_pic }}" 
+                },
+                {% endfor %}
+            ]
+        };
     </script>
-    
 
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            delimiters: ['[[', ']]'], 
+            data() {
+                return {
+                    categories: serverData.categories,
+                    cartList: serverData.initialCart,
+                    currentCategory: 0,
+                    ptype: '1',
+                    bank: '1'
+                }
+            },
+            computed: {
+                totalPrice() {
+                    return this.cartList.reduce((sum, item) => sum + (item.price * item.num), 0);
+                },
+                totalCount() {
+                    return this.cartList.reduce((sum, item) => sum + item.num, 0);
+                }
+            },
+            methods: {
+                scrollToCategory(index) {
+                    this.currentCategory = index;
+                    const el = document.getElementById('cat-' + index);
+                    if(el) el.scrollIntoView({ behavior: 'smooth' });
+                },
+                
+                addToCart(product) {
+                    // 使用原生 Django 路由
+                    const url = "{% url 'web_cart_add' 0 %}".replace('0', product.id);
+                    axios.get(url)
+                        .then(res => {
+                            const existing = this.cartList.find(item => item.id == product.id);
+                            if (existing) {
+                                existing.num++;
+                            } else {
+                                this.cartList.push({ ...product, num: 1 });
+                            }
+                        })
+                        .catch(err => console.error(err));
+                },
+
+                changeNum(item, delta) {
+                    const newNum = item.num + delta;
+                    if (newNum < 1) {
+                         const url = "{% url 'web_cart_delete' 0 %}".replace('0', item.id);
+                         axios.get(url).then(() => {
+                             this.cartList = this.cartList.filter(i => i.id !== item.id);
+                         });
+                         return;
+                    }
+
+                    axios.get("{% url 'web_cart_change' %}", {
+                        params: { pid: item.id, num: newNum }
+                    }).then(() => {
+                        item.num = newNum;
+                    });
+                },
+
+                clearCart() {
+                    if(!confirm("确定清空购物车吗？")) return;
+                    axios.get("{% url 'web_cart_clear' %}").then(() => {
+                        this.cartList = [];
+                    });
+                },
+
+                submitOrder() {
+                    if (this.cartList.length === 0) {
+                        alert("购物车为空！");
+                        return;
+                    }
+                    if (!confirm("确定要结算吗？")) return;
+
+                    axios.get("{% url 'web_orders_insert' %}", {
+                        params: { ptype: this.ptype, bank: this.bank }
+                    }).then(res => {
+                        if (res.data === "Y" || res.data.trim() === "Y") {
+                            alert("下单成功！");
+                            window.location.reload();
+                        } else {
+                            alert("下单失败：" + res.data);
+                        }
+                    });
+                }
+            }
+        }).mount('#app');
+    </script>
 </body>
 </html>
