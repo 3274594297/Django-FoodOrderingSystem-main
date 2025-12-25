@@ -1,187 +1,573 @@
-/*
-SQLyog Community v13.1.1 (32 bit)
-MySQL - 5.7.26 : Database - osdb
-*********************************************************************
-*/
+-- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: osdb
+-- ------------------------------------------------------
+-- Server version	8.0.44
 
-/*!40101 SET NAMES utf8 */;
-
-/*!40101 SET SQL_MODE=''*/;
-
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`osdb` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
-USE `osdb`;
+--
+-- Table structure for table `auth_group`
+--
 
-/*Table structure for table `category` */
+DROP TABLE IF EXISTS `auth_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_group` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_group`
+--
+
+LOCK TABLES `auth_group` WRITE;
+/*!40000 ALTER TABLE `auth_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_group_permissions`
+--
+
+DROP TABLE IF EXISTS `auth_group_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_group_permissions` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `permission_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`),
+  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
+  CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_group_permissions`
+--
+
+LOCK TABLES `auth_group_permissions` WRITE;
+/*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_permission`
+--
+
+DROP TABLE IF EXISTS `auth_permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_permission` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `content_type_id` int NOT NULL,
+  `codename` varchar(100) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
+  CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_permission`
+--
+
+LOCK TABLES `auth_permission` WRITE;
+/*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
+INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can view log entry',1,'view_logentry'),(5,'Can add permission',3,'add_permission'),(6,'Can change permission',3,'change_permission'),(7,'Can delete permission',3,'delete_permission'),(8,'Can view permission',3,'view_permission'),(9,'Can add group',2,'add_group'),(10,'Can change group',2,'change_group'),(11,'Can delete group',2,'delete_group'),(12,'Can view group',2,'view_group'),(13,'Can add user',4,'add_user'),(14,'Can change user',4,'change_user'),(15,'Can delete user',4,'delete_user'),(16,'Can view user',4,'view_user'),(17,'Can add content type',5,'add_contenttype'),(18,'Can change content type',5,'change_contenttype'),(19,'Can delete content type',5,'delete_contenttype'),(20,'Can view content type',5,'view_contenttype'),(21,'Can add session',6,'add_session'),(22,'Can change session',6,'change_session'),(23,'Can delete session',6,'delete_session'),(24,'Can view session',6,'view_session'),(25,'Can add category',7,'add_category'),(26,'Can change category',7,'change_category'),(27,'Can delete category',7,'delete_category'),(28,'Can view category',7,'view_category'),(29,'Can add member',8,'add_member'),(30,'Can change member',8,'change_member'),(31,'Can delete member',8,'delete_member'),(32,'Can view member',8,'view_member'),(33,'Can add order',9,'add_order'),(34,'Can change order',9,'change_order'),(35,'Can delete order',9,'delete_order'),(36,'Can view order',9,'view_order'),(37,'Can add product',10,'add_product'),(38,'Can change product',10,'change_product'),(39,'Can delete product',10,'delete_product'),(40,'Can view product',10,'view_product'),(41,'Can add shop',11,'add_shop'),(42,'Can change shop',11,'change_shop'),(43,'Can delete shop',11,'delete_shop'),(44,'Can view shop',11,'view_shop'),(45,'Can add user',12,'add_user'),(46,'Can change user',12,'change_user'),(47,'Can delete user',12,'delete_user'),(48,'Can view user',12,'view_user'),(49,'Can add order detail',13,'add_orderdetail'),(50,'Can change order detail',13,'change_orderdetail'),(51,'Can delete order detail',13,'delete_orderdetail'),(52,'Can view order detail',13,'view_orderdetail'),(53,'Can add orders',14,'add_orders'),(54,'Can change orders',14,'change_orders'),(55,'Can delete orders',14,'delete_orders'),(56,'Can view orders',14,'view_orders'),(57,'Can add payment',15,'add_payment'),(58,'Can change payment',15,'change_payment'),(59,'Can delete payment',15,'delete_payment'),(60,'Can view payment',15,'view_payment');
+/*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_user`
+--
+
+DROP TABLE IF EXISTS `auth_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `password` varchar(128) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `last_login` datetime(6) DEFAULT NULL,
+  `is_superuser` tinyint(1) NOT NULL,
+  `username` varchar(150) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `first_name` varchar(150) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `last_name` varchar(150) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `email` varchar(254) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `is_staff` tinyint(1) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `date_joined` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user`
+--
+
+LOCK TABLES `auth_user` WRITE;
+/*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_user_groups`
+--
+
+DROP TABLE IF EXISTS `auth_user_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_user_groups` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_user_groups_user_id_group_id_94350c0c_uniq` (`user_id`,`group_id`),
+  KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`),
+  CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
+  CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user_groups`
+--
+
+LOCK TABLES `auth_user_groups` WRITE;
+/*!40000 ALTER TABLE `auth_user_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `auth_user_user_permissions`
+--
+
+DROP TABLE IF EXISTS `auth_user_user_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_user_user_permissions` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `permission_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_user_user_permissions_user_id_permission_id_14a6b632_uniq` (`user_id`,`permission_id`),
+  KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`),
+  CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
+  CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_user_user_permissions`
+--
+
+LOCK TABLES `auth_user_user_permissions` WRITE;
+/*!40000 ALTER TABLE `auth_user_user_permissions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auth_user_user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `category`
+--
 
 DROP TABLE IF EXISTS `category`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '菜品分类id',
-  `shop_id` int(11) DEFAULT NULL COMMENT '店铺id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '菜品分类id',
+  `shop_id` int DEFAULT NULL COMMENT '店铺id',
   `name` varchar(50) DEFAULT NULL COMMENT '分类名称',
-  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1正常 9删除',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态：1正常 9删除',
   `create_at` datetime DEFAULT NULL COMMENT '添加时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `django_migrations` */
+--
+-- Dumping data for table `category`
+--
+
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+INSERT INTO `category` VALUES (12,6,'锡纸饭',1,'2025-12-24 13:17:17','2025-12-24 13:17:17'),(13,6,'盖浇饭',1,'2025-12-24 13:17:34','2025-12-24 13:17:34'),(14,7,'炒饭',1,'2025-12-25 05:22:59','2025-12-25 05:22:59'),(15,7,'现卤鸭货',1,'2025-12-25 05:23:23','2025-12-25 05:23:23'),(16,7,'小料',1,'2025-12-25 05:23:34','2025-12-25 05:23:34');
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_admin_log`
+--
+
+DROP TABLE IF EXISTS `django_admin_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `django_admin_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `action_time` datetime(6) NOT NULL,
+  `object_id` longtext COLLATE utf8mb4_et_0900_ai_ci,
+  `object_repr` varchar(200) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `action_flag` smallint unsigned NOT NULL,
+  `change_message` longtext COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `content_type_id` int DEFAULT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`),
+  KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`),
+  CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
+  CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
+  CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_admin_log`
+--
+
+LOCK TABLES `django_admin_log` WRITE;
+/*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_content_type`
+--
+
+DROP TABLE IF EXISTS `django_content_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `django_content_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `app_label` varchar(100) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  `model` varchar(100) COLLATE utf8mb4_et_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_et_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_content_type`
+--
+
+LOCK TABLES `django_content_type` WRITE;
+/*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
+INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(2,'auth','group'),(3,'auth','permission'),(4,'auth','user'),(5,'contenttypes','contenttype'),(7,'myadmin','category'),(8,'myadmin','member'),(9,'myadmin','order'),(13,'myadmin','orderdetail'),(14,'myadmin','orders'),(15,'myadmin','payment'),(10,'myadmin','product'),(11,'myadmin','shop'),(12,'myadmin','user'),(6,'sessions','session');
+/*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_migrations`
+--
 
 DROP TABLE IF EXISTS `django_migrations`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `django_migrations` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `app` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `django_session` */
+--
+-- Dumping data for table `django_migrations`
+--
+
+LOCK TABLES `django_migrations` WRITE;
+/*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2025-12-24 14:49:45.042765'),(2,'auth','0001_initial','2025-12-24 14:49:45.819617'),(3,'admin','0001_initial','2025-12-24 14:49:46.005646'),(4,'admin','0002_logentry_remove_auto_add','2025-12-24 14:49:46.011987'),(5,'admin','0003_logentry_add_action_flag_choices','2025-12-24 14:49:46.017675'),(6,'contenttypes','0002_remove_content_type_name','2025-12-24 14:49:46.171494'),(7,'auth','0002_alter_permission_name_max_length','2025-12-24 14:49:46.251259'),(8,'auth','0003_alter_user_email_max_length','2025-12-24 14:49:46.280336'),(9,'auth','0004_alter_user_username_opts','2025-12-24 14:49:46.287651'),(10,'auth','0005_alter_user_last_login_null','2025-12-24 14:49:46.369209'),(11,'auth','0006_require_contenttypes_0002','2025-12-24 14:49:46.372002'),(12,'auth','0007_alter_validators_add_error_messages','2025-12-24 14:49:46.379081'),(13,'auth','0008_alter_user_username_max_length','2025-12-24 14:49:46.464286'),(14,'auth','0009_alter_user_last_name_max_length','2025-12-24 14:49:46.538663'),(15,'auth','0010_alter_group_name_max_length','2025-12-24 14:49:46.554606'),(16,'auth','0011_update_proxy_permissions','2025-12-24 14:49:46.561721'),(17,'auth','0012_alter_user_first_name_max_length','2025-12-24 14:49:46.658105'),(18,'myadmin','0001_initial','2025-12-24 14:51:28.624880'),(19,'sessions','0001_initial','2025-12-24 14:51:28.630543'),(20,'myadmin','0002_orderdetail_orders_payment_delete_order_and_more','2025-12-25 03:13:07.167481');
+/*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_session`
+--
 
 DROP TABLE IF EXISTS `django_session`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL,
   PRIMARY KEY (`session_key`),
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `member` */
+--
+-- Dumping data for table `django_session`
+--
+
+LOCK TABLES `django_session` WRITE;
+/*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
+INSERT INTO `django_session` VALUES ('025hjcbidyjnxdss0zdxwtmg4h589srz','.eJzdk92OmzAQhV8l4noTecb2gP0qzQoZ2yS0CSB-usqu8u473pA06kZVpfZqEULYHM-c8xm_ZT_j0NQn34WY2cyghOwpG_dd37R1l9m3rAmZpaesdcck2M4UjdjO2ot6OxvKaTvnIgaekaT4K3rP84bCUobX8JvvuE3ZN56HkBPpAlGojS4MEdDme79jUeXa9qHKCDK4iFwIQxzHixVfydRY52wCkK2oWnsW9fuuTW6huF3JzuSmmVcC-xmim2LpJhahQL0GXKNaAVg0VioWz314qJAWyCqVnbkIC3bdcDo045RIAV55Ad4BMxqB_cWquIHpm8A-vl3EKC6kyoX0tWx5rfQAnizkRgvKAfTC5Ve7GCA9E45HrYfGsxDkRvwVEc5rrJJ_JvKhOD8zE5A3BvLOVE6B7VBQ-e8Mns_nZKoLs5-uIFFci3wZNhxy6iZ3KI_8Z54yyw1eYjWPcbjx4io8XLy-7l27G12b3Df-xy2BrpFPn4rCJL9uHF-6IZR7N-4TgAgGQqGhkpUyDlVRq-gIa6oEKRD3S0Z3SGYBpdJ0dzjoU1yxFvkaixUU9uP-HPeiMCtRWEFW63Q4XDg27X_OF5QG8FJLNLKqQZs6qKKSFGsfPRE9yqeIBP5jvst26hWHU8t2vgOZQ304:1vYfP0:TMa5SnNbp_ig_Z8QWiohQTqSvllStTI_xSalXDvs9pE','2026-01-08 07:04:50.208577'),('06kw4bcbn1ov1bjnpcxekapkbjkx6o5w','.eJzdl9uSojAQhl9limulkk46B15l3bIwgLLrgMVhp2anfPdtECPjOHi4cykvBP90_1_b6RQfwZ-0yrN3VyZpEAWacRPMgnpT7vIiK4PoI8iTINKzoIhfO8GiNYnARYvWiEVrU0i6J6CHRaSgb66koMtd7uiWa6WUZFyq0DDNKH74a7cm0Souissqw6wVgypOkiqt6z6zcivKiQL1otUc1KKVGToS7TZl0Znj1l-dnyZuWlrJyVCVxk26jBsSAQOcc5gDvjCMACJQJG53yaRiT0FIsC6r921eN11huDyWh8tRfTSzQJWxKumc5Qk5-HGQgTgUaTmU9BhweYxxoW4gIbSagZByqIhPNBSfxew8aZW7tIsYslurICMG01XoFfvZQCIfIDEQcmPQWnOZRGmdTfKIe3jkVR454sH7eQTjoVAcO64zHkOd-g0Dv50BI8anGXrF_if1JkffizjuRbFi3Y5R8myvfu5LNUWPl-nBhFoqY-AL_SGRzhyeuNU92GCuYZPC_3X6AfOIoaRL8W9a0XCdPWge8Zp5Unjz5gHzWocCgOF3lTecq5N5vN28irieNt8rDg2nfMOpkQN0jPawwn4Af24yO4WqLqISbGgRyYM-R9Us1d3m0u6ECvegSnENlRSEuu_Cl0nrmuPcB3FEf_6BTtnbV4pFlOCPs_9luo_h_Hx85lE_BvL77ymn95hEe5JnHOVjEuNJnnGuj0msJ3nGse1JCOUtXbV1WvnTilbT7WDo7yYu1nVcdCty9_t0jGVAY0qmrD_G4rp-K6tkuYnrDf2cSOTcCRRgxSrjaLNEmpVQaeZSRwUYL6njbWeS3mtUP22PmOoLJpszPQfzwk3UfyYwidH2p9MsaMom3i5f6fXnPYjY_h_k6M_R:1vYfQy:U9fVCRRtwPx4qaqBpYVnCpODcqdpHLwgbdJNyjGwbB4','2026-01-08 07:06:52.210959');
+/*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `member`
+--
 
 DROP TABLE IF EXISTS `member`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '会员表id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '会员表id',
   `nickname` varchar(50) DEFAULT NULL COMMENT '昵称',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
   `mobile` varchar(50) DEFAULT NULL COMMENT '电话',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '状态:1正常/2禁用/9删除',
+  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态:1正常/2禁用/9删除',
   `create_at` datetime DEFAULT NULL COMMENT '添加时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=123456791 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `migrations` */
+--
+-- Dumping data for table `member`
+--
+
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES (123456790,'李四','1766646234.0877998.jpg','16666666666',1,'2025-12-24 11:59:25','2025-12-24 11:59:25');
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `migrations`
+--
 
 DROP TABLE IF EXISTS `migrations`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `migrations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `order_detail` */
+--
+-- Dumping data for table `migrations`
+--
+
+LOCK TABLES `migrations` WRITE;
+/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_detail`
+--
 
 DROP TABLE IF EXISTS `order_detail`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_detail` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单详情id',
-  `order_id` int(10) unsigned DEFAULT NULL COMMENT '订单id',
-  `product_id` int(10) unsigned DEFAULT NULL COMMENT '菜品id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '订单详情id',
+  `order_id` int unsigned DEFAULT NULL COMMENT '订单id',
+  `product_id` int unsigned DEFAULT NULL COMMENT '菜品id',
   `product_name` varchar(50) DEFAULT NULL COMMENT '菜品名称',
   `price` double(6,2) unsigned DEFAULT NULL COMMENT '单价',
-  `quantity` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '数量',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '状态:1正常/9删除',
+  `quantity` int unsigned NOT NULL DEFAULT '1' COMMENT '数量',
+  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态:1正常/9删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='订单详情信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb3 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC COMMENT='订单详情信息表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `orders` */
+--
+-- Dumping data for table `order_detail`
+--
+
+LOCK TABLES `order_detail` WRITE;
+/*!40000 ALTER TABLE `order_detail` DISABLE KEYS */;
+INSERT INTO `order_detail` VALUES (36,16,20,'黑鸦锡纸饭',13.00,1,1),(37,17,20,'黑鸦锡纸饭',13.00,7,1),(38,18,20,'黑鸦锡纸饭',13.00,3,1),(39,19,21,'青椒肉丝盖浇饭',10.00,1,1),(40,19,20,'黑鸦锡纸饭',13.00,1,1),(41,20,21,'青椒肉丝盖浇饭',10.00,5,1),(42,21,22,'经典锡纸饭',11.00,1,1),(43,22,22,'经典锡纸饭',11.00,2,1),(44,22,21,'青椒肉丝盖浇饭',10.00,3,1),(45,22,20,'黑鸦锡纸饭',13.00,6,1),(46,23,23,'鸭肠炒饭',14.00,1,1),(47,23,26,'鸭翅',6.00,1,1),(48,23,29,'烧饼',2.00,1,1),(49,24,28,'鸭脖',5.00,2,1),(50,25,23,'鸭肠炒饭',14.00,1,1),(51,25,24,'鸭板肠炒饭',13.00,1,1),(52,25,25,'蛋炒饭',11.00,1,1),(53,25,26,'鸭翅',6.00,1,1),(54,25,27,'鸭腿',6.00,1,1),(55,25,28,'鸭脖',5.00,1,1),(56,25,29,'烧饼',2.00,1,1);
+/*!40000 ALTER TABLE `order_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders`
+--
 
 DROP TABLE IF EXISTS `orders`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单表id',
-  `shop_id` int(10) unsigned DEFAULT NULL COMMENT '店铺id号',
-  `member_id` int(10) unsigned DEFAULT NULL COMMENT '会员id',
-  `user_id` int(10) unsigned DEFAULT NULL COMMENT '操作员id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '订单表id',
+  `shop_id` int unsigned DEFAULT NULL COMMENT '店铺id号',
+  `member_id` int unsigned DEFAULT NULL COMMENT '会员id',
+  `user_id` int unsigned DEFAULT NULL COMMENT '操作员id',
   `money` double(8,2) DEFAULT NULL COMMENT '金额',
-  `status` tinyint(3) unsigned DEFAULT NULL COMMENT '订单状态:1过行中/2无效/3已完成',
-  `payment_status` tinyint(3) unsigned DEFAULT NULL COMMENT '支付状态:1未支付/2已支付/3已退款',
+  `status` tinyint unsigned DEFAULT NULL COMMENT '订单状态:1过行中/2无效/3已完成',
+  `payment_status` tinyint unsigned DEFAULT NULL COMMENT '支付状态:1未支付/2已支付/3已退款',
   `create_at` datetime DEFAULT NULL COMMENT '添加时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `payment` */
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (16,6,0,1,13.00,3,2,'2025-12-24 14:57:12','2025-12-24 14:57:12'),(17,6,0,16,91.00,3,2,'2025-12-25 01:11:12','2025-12-25 01:11:12'),(18,6,0,16,39.00,3,2,'2025-12-25 01:23:07','2025-12-25 01:23:07'),(19,6,0,16,23.00,2,2,'2025-12-25 01:34:27','2025-12-25 01:34:27'),(20,6,0,16,50.00,3,2,'2025-12-25 02:32:16','2025-12-25 02:32:16'),(21,6,0,15,11.00,1,2,'2025-12-25 05:19:54','2025-12-25 05:19:54'),(22,6,0,15,130.00,1,2,'2025-12-25 05:21:34','2025-12-25 05:21:34'),(23,7,0,15,22.00,2,2,'2025-12-25 05:27:42','2025-12-25 05:27:42'),(24,7,123456790,15,10.00,3,2,'2025-12-25 06:19:33','2025-12-25 06:19:33'),(25,7,123456790,1,57.00,1,2,'2025-12-25 07:06:51','2025-12-25 07:06:51');
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payment`
+--
 
 DROP TABLE IF EXISTS `payment`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payment` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '支付表id',
-  `order_id` int(10) unsigned DEFAULT NULL COMMENT '订单id',
-  `member_id` int(10) unsigned DEFAULT NULL COMMENT '会员id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '支付表id',
+  `order_id` int unsigned DEFAULT NULL COMMENT '订单id',
+  `member_id` int unsigned DEFAULT NULL COMMENT '会员id',
   `money` double(8,2) unsigned DEFAULT NULL COMMENT '支付金额',
-  `type` tinyint(3) unsigned DEFAULT NULL COMMENT '付款方式：1会员付款/2收银收款',
-  `bank` tinyint(3) unsigned DEFAULT NULL COMMENT '收款银行渠道:1微信/2余额/3现金/4支付宝',
-  `status` tinyint(3) unsigned DEFAULT NULL COMMENT '支付状态:1未支付/2已支付/3已退款',
+  `type` tinyint unsigned DEFAULT NULL COMMENT '付款方式：1会员付款/2收银收款',
+  `bank` tinyint unsigned DEFAULT NULL COMMENT '收款银行渠道:1微信/2余额/3现金/4支付宝',
+  `status` tinyint unsigned DEFAULT NULL COMMENT '支付状态:1未支付/2已支付/3已退款',
   `create_at` datetime DEFAULT NULL COMMENT '添加时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `product` */
+--
+-- Dumping data for table `payment`
+--
+
+LOCK TABLES `payment` WRITE;
+/*!40000 ALTER TABLE `payment` DISABLE KEYS */;
+INSERT INTO `payment` VALUES (14,16,0,13.00,2,1,2,'2025-12-24 14:57:12','2025-12-24 14:57:12'),(15,17,0,91.00,2,1,2,'2025-12-25 01:11:12','2025-12-25 01:11:12'),(16,18,0,39.00,2,1,2,'2025-12-25 01:23:07','2025-12-25 01:23:07'),(17,19,0,23.00,2,1,2,'2025-12-25 01:34:27','2025-12-25 01:34:27'),(18,20,0,50.00,2,3,2,'2025-12-25 02:32:16','2025-12-25 02:32:16'),(19,21,0,11.00,2,1,2,'2025-12-25 05:19:54','2025-12-25 05:19:54'),(20,22,0,130.00,2,3,2,'2025-12-25 05:21:34','2025-12-25 05:21:34'),(21,23,0,22.00,2,1,2,'2025-12-25 05:27:42','2025-12-25 05:27:42'),(22,24,0,10.00,2,2,2,'2025-12-25 06:19:33','2025-12-25 06:19:33'),(23,25,0,57.00,2,2,2,'2025-12-25 07:06:51','2025-12-25 07:06:51');
+/*!40000 ALTER TABLE `payment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product`
+--
 
 DROP TABLE IF EXISTS `product`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '菜品id',
-  `shop_id` int(11) DEFAULT NULL COMMENT '店铺id',
-  `category_id` int(11) DEFAULT NULL COMMENT '菜品分类id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '菜品id',
+  `shop_id` int DEFAULT NULL COMMENT '店铺id',
+  `category_id` int DEFAULT NULL COMMENT '菜品分类id',
   `cover_pic` varchar(50) DEFAULT NULL COMMENT '菜品图片',
   `name` varchar(50) DEFAULT NULL COMMENT '菜品名称',
   `price` double(6,2) DEFAULT NULL COMMENT '单价',
-  `status` tinyint(4) DEFAULT NULL COMMENT '状态：1:正常  2:停售  9:删除',
+  `status` tinyint DEFAULT NULL COMMENT '状态：1:正常  2:停售  9:删除',
   `create_at` datetime DEFAULT NULL COMMENT '添加时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `shop` */
+--
+-- Dumping data for table `product`
+--
+
+LOCK TABLES `product` WRITE;
+/*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (20,6,12,'1766582383.5067115.jpg','黑鸦锡纸饭',13.00,1,'2025-12-24 13:19:43','2025-12-24 13:19:43'),(21,6,13,'1766626445.2229645.jpeg','青椒肉丝盖浇饭',10.00,1,'2025-12-25 01:34:05','2025-12-25 01:34:05'),(22,6,12,'1766634050.0803962.jpg','经典锡纸饭',11.00,1,'2025-12-25 03:40:50','2025-12-25 03:40:50'),(23,7,14,'1766640242.9702344.jpg','鸭肠炒饭',14.00,1,'2025-12-25 05:24:02','2025-12-25 05:24:02'),(24,7,14,'1766640282.1885998.jpg','鸭板肠炒饭',13.00,1,'2025-12-25 05:24:42','2025-12-25 05:24:42'),(25,7,14,'1766640301.3615282.jpg','蛋炒饭',11.00,1,'2025-12-25 05:25:01','2025-12-25 05:25:01'),(26,7,15,'1766640328.7468822.jpg','鸭翅',6.00,1,'2025-12-25 05:25:28','2025-12-25 05:25:28'),(27,7,15,'1766640355.4444618.jpg','鸭腿',6.00,1,'2025-12-25 05:25:55','2025-12-25 05:25:55'),(28,7,15,'1766640377.3220522.jpg','鸭脖',5.00,1,'2025-12-25 05:26:17','2025-12-25 05:26:17'),(29,7,16,'1766640403.9550257.jpg','烧饼',2.00,1,'2025-12-25 05:26:43','2025-12-25 05:26:43'),(30,7,16,'1766640435.2146912.jpg','加一点鸭肠',4.00,9,'2025-12-25 05:27:15','2025-12-25 06:31:56');
+/*!40000 ALTER TABLE `product` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `shop`
+--
 
 DROP TABLE IF EXISTS `shop`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `shop` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '店铺id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '店铺id',
   `name` varchar(255) NOT NULL COMMENT '店铺名称',
   `cover_pic` varchar(255) DEFAULT NULL COMMENT '封面图片',
   `banner_pic` varchar(255) DEFAULT NULL COMMENT '图标Logo',
   `address` varchar(255) DEFAULT NULL COMMENT '店铺地址',
   `phone` varchar(255) DEFAULT NULL COMMENT '联系电话',
-  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1:正常 2:暂停 9:删除',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态：1:正常 2:暂停 9:删除',
   `create_at` datetime DEFAULT NULL COMMENT '添加时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*Table structure for table `user` */
+--
+-- Dumping data for table `shop`
+--
+
+LOCK TABLES `shop` WRITE;
+/*!40000 ALTER TABLE `shop` DISABLE KEYS */;
+INSERT INTO `shop` VALUES (6,'源小陶热卤拌饭','1766582204.5896616.jpg','1766582204.590692.jpg','河南焦作','18888888888',1,'2025-12-24 11:29:34','2025-12-24 13:16:44'),(7,'贵妃鸭货','1766640146.8070018.jpg','1766640146.8080993.jpg','河南焦作','19999999999',1,'2025-12-25 05:22:26','2025-12-25 05:22:26');
+/*!40000 ALTER TABLE `shop` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
 
 DROP TABLE IF EXISTS `user`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '员工账号id',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '员工账号id',
   `username` varchar(50) DEFAULT NULL COMMENT '员工账号',
   `nickname` varchar(50) DEFAULT NULL COMMENT '昵称',
   `password_hash` varchar(100) DEFAULT NULL COMMENT '密码',
   `password_salt` varchar(50) DEFAULT NULL COMMENT '密码干扰值',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '状态:1正常/2禁用/9删除',
+  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态:1正常/2禁用/9删除',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3 COMMENT='员工表';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `user`
+--
 
-insert  into `user`(`id`,`username`,`nickname`,`password_hash`,`password_salt`,`status`,`create_at`,`update_at`) values (1,'zhangsan','张三','1e191d851b3b49a248f4ea62f6b06410','123456',6,'2020-07-28 18:18:18','2020-07-29 08:06:55');
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'zhangsan','张三','d4511c353293bf159fd48b36efcec666','146602',6,'2020-07-28 18:18:18','2025-12-25 06:49:43'),(15,'wangwu','王五','e6540427d2e5389bfe22229be8bcb4f5','364277',1,'2025-12-24 10:39:49','2025-12-25 06:58:41'),(16,'1234','账号1234密码123','40abe7abe6168519b0aa3dfc677cdcf0','174082',1,'2025-12-24 12:13:47','2025-12-24 12:13:47');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-25 15:25:25

@@ -84,13 +84,41 @@
                 </div>
 
                 <div class="cart-footer">
-                    <div style="margin-bottom: 15px;">
-                        <label><input type="radio" v-model="ptype" value="1"> 堂食</label> &nbsp;
-                        <label><input type="radio" v-model="ptype" value="2"> 打包</label>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label><input type="radio" v-model="bank" value="1"> 现金</label> &nbsp;
-                        <label><input type="radio" v-model="bank" value="3"> 微信</label>
+                    <div class="checkout-section">
+                        <div class="form-row">
+                            <span class="row-label">就餐</span>
+                            <div class="row-content">
+                                <label class="radio-box">
+                                    <input type="radio" name="type" value="1" v-model="orderType">
+                                    <span>堂食</span>
+                                </label>
+                                <label class="radio-box">
+                                    <input type="radio" name="type" value="2" v-model="orderType">
+                                    <span>打包</span>
+                                </label>
+                            </div>
+                        </div>
+                    
+                        <div class="form-row">
+                            <span class="row-label">会员</span>
+                            <div class="row-content">
+                                <input type="number" v-model="memberId" placeholder="输入会员ID (选填)" class="clean-input">
+                            </div>
+                        </div>
+                    
+                        <div class="form-row">
+                            <span class="row-label">支付</span>
+                            <div class="row-content">
+                                <label class="radio-box">
+                                    <input type="radio" name="bank" value="1" v-model="payType">
+                                    <span>现金</span>
+                                </label>
+                                <label class="radio-box">
+                                    <input type="radio" name="bank" value="2" v-model="payType">
+                                    <span>微信</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:18px;">
                         <span>合计</span>
@@ -146,8 +174,9 @@
                     categories: serverData.categories,
                     cartList: serverData.initialCart,
                     currentCategory: 0,
-                    ptype: '1',
-                    bank: '1'
+                    orderType: '1',  // 对应 HTML 里的 v-model="orderType" (1=堂食)
+                    payType: '1',    // 对应 HTML 里的 v-model="payType"   (1=现金)
+                    memberId: ''     // 对应 HTML 里的 v-model="memberId"  (会员ID)
                 }
             },
             computed: {
@@ -212,17 +241,24 @@
                     if (!confirm("确定要结算吗？")) return;
 
                     axios.get("{% url 'web_orders_insert' %}", {
-                        params: { ptype: this.ptype, bank: this.bank }
+                        params: {
+                            bank: this.payType, // 你的支付方式
+                            mid: this.memberId  // <--- 传过去的会员ID
+                        }
                     }).then(res => {
-                        if (res.data === "Y" || res.data.trim() === "Y") {
+                        // 3. 处理后端的返回结果
+                        if (res.data === "Y") {
                             alert("下单成功！");
                             window.location.reload();
+                        } else if (res.data === "NoMember") {
+                            // <--- 专门处理“未查询到会员”的情况
+                            alert("未查询到相应会员用户，请检查ID是否正确！");
                         } else {
-                            alert("下单失败：" + res.data);
+                            alert("下单失败，请重试");
                         }
                     });
-                }
-            }
+                        }
+                    }
         }).mount('#app');
     </script>
 </body>

@@ -101,16 +101,33 @@ def edit(request, uid=0):
         return render(request,"myadmin/info.html",context)
     
 
+# 文件：myadmin/views/user.py
+
 def update(request, uid):
     """执行信息编辑"""
     try:
         ob = User.objects.get(id=uid)
         ob.nickname = request.POST['nickname']
         ob.status = request.POST['status']
+        
+        # ======= 新增：密码修改逻辑 =======
+        # 获取新密码，如果为空则不修改
+        # 注意：后台表单我们也统一用 'password' 这个name
+        password = request.POST.get('password', '')
+        if password: 
+            import hashlib
+            md5 = hashlib.md5()
+            n = random.randint(100000, 999999)
+            s = password + str(n) 
+            md5.update(s.encode('utf-8'))
+            ob.password_hash = md5.hexdigest()
+            ob.password_salt = n
+        # ================================
+
         ob.update_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         ob.save()
-        context={"info":"修改成功！"}
+        context = {"info": "修改成功！"}
     except Exception as err:
         print(err)
-        context={"info":"修改失败"}
-    return render(request,"myadmin/info.html",context)
+        context = {"info": "修改失败"}
+    return render(request, "myadmin/info.html", context)

@@ -67,7 +67,7 @@ def dologin(request):
 
 # 退出管理员登录
 def logout(request):
-    del request.session['adminuser']
+    request.session.pop('adminuser', None)
     return render(request, "myadmin/index/login.html")
 
 

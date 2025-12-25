@@ -136,3 +136,77 @@ body {
 /* 滚动条 */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+
+/* === 结算区域容器 === */
+.checkout-section {
+    padding: 20px 0;
+    margin-top: 15px;
+    border-top: 1px dashed #eee; /* 用虚线看起来更像小票，更有质感 */
+}
+
+/* === 每一行的布局 === */
+.form-row {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    margin-bottom: 18px; /* 拉大行间距，解决“太紧”的问题 */
+}
+
+/* === 左侧文字标签 === */
+.row-label {
+    width: 60px; /* 固定宽度，确保所有行左侧对齐 */
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+}
+
+/* === 右侧内容区域 === */
+.row-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px; /* 单选按钮之间的间距 */
+}
+
+/* === 单选按钮美化 === */
+.radio-box {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+.radio-box input {
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+/* === 输入框美化 (核心) === */
+.clean-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px; /* 圆角 */
+    font-size: 14px;
+    background-color: #f8f9fa; /* 淡淡的灰色背景 */
+    outline: none;
+    transition: all 0.3s;
+}
+
+.clean-input:focus {
+    background-color: #fff;
+    border-color: #ff9800; /* 聚焦时变成主题橙色 */
+    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1); /* 橙色光晕 */
+}
+
+/* === 关键：去掉输入框右边那个难看的上下箭头 === */
+/* 针对 Chrome, Safari, Edge, Opera */
+.clean-input::-webkit-outer-spin-button,
+.clean-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* 针对 Firefox */
+.clean-input {
+  -moz-appearance: textfield;
+}

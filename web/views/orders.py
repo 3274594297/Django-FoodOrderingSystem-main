@@ -38,10 +38,10 @@ def index(request, pIndex=1):
             vo.nickname = user.nickname
             
         if vo.member_id == 0:
-            vo.nickname = "大堂顾客"
+            vo.membername = "大堂顾客"
         else:
-            mem = Member.objects.only('mobile').get(id=vo.member_id)
-            vo.membername = mem.mobile
+            mem = Member.objects.only('nickname').get(id=vo.member_id)
+            vo.membername = mem.nickname
     #封装信息加载模板输出
     context = {"orderslist":list2,'plist':plist,'pIndex':pIndex,'maxpages':maxpages,'mywhere':mywhere,'url':request.build_absolute_uri()}
     return render(request,"web/list.html",context)
@@ -57,6 +57,25 @@ def insert(request):
         od.money = request.session['total_money']
         od.status = 1  # 订单状态：1过行中/2无效/3已完成
         od.payment_status = 2 # 支付状态：1未支付/2已支付/已退款
+
+# ====================【核心修改开始】====================
+        # 1. 获取前端传来的会员ID (默认为0)
+        mid = request.GET.get("mid", 0)
+        
+        # 2. 判断是否输入了有效ID
+        if mid and str(mid) != '0':
+            try:
+                # 去数据库查这个会员，并且状态必须正常(status=1)
+                member = Member.objects.get(id=mid, status=1)
+                od.member_id = member.id # 查到了，把ID赋值给订单
+            except Member.DoesNotExist:
+                # 如果没查到，或者会员被删除了，直接返回特定暗号
+                return HttpResponse("NoMember")
+        else:
+            # 没输ID，或者输的是0，就是大堂顾客
+            od.member_id = 0
+        # ====================【核心修改结束】====================
+
         od.create_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         od.update_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         od.save()
