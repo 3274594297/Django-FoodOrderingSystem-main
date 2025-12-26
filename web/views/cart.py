@@ -44,6 +44,7 @@ def change(request):
     cartlist = request.session.get('cartlist', {})
     pid = request.GET.get("pid", 0)  # 得到菜品序号
     m = int(request.GET.get("num", 1))
+    #防止被恶意篡改
     if m < 1:
         m = 1
     cartlist[pid]["num"] = m

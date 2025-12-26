@@ -1,92 +1,82 @@
 {% extends "myadmin/base.html" %}
 
-{% block main_body %}
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        订单信息
-        <small>订餐系统后台管理</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-        <li class="active">订单信息</li>
-      </ol>
-    </section>
+{% block content-header %}
+    订单信息管理 <small>订餐系统后台管理</small>
+{% endblock %}
 
-    <!-- Main content -->
-    <section class="content container-fluid">
+{% block content %}
+<div class="card">
+    <div class="table-header-tools">
+        <h3 style="font-size: 18px;"> 订单信息表</h3>
+        
+        <form action="{% url 'myadmin_order_index' 1 %}" method="get" class="search-form">
+            <input type="text" name="keyword" class="form-control" placeholder="搜索订单号..." value="{{ request.GET.keyword }}">
+            <button type="submit" class="btn btn-primary">🔍</button>
+        </form>
+    </div>
 
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title"><i class="fa fa-calendar"></i> 订单信息表</h3>
-
-              <div class="box-tools">
-                <div class="input-group input-group-sm" style="width: 150px;">
-                  <input type="text" name="table_search" class="form-control pull-right" placeholder="订单号">
-
-                  <div class="input-group-btn">
-                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>店铺ID</th>
-                  <th>会员ID</th> <th>管理员ID</th> <th>订单总价</th>
-                  <th>当前状态</th>
-                  <th>支付状态</th> <th>下单时间</th>
+                    <th>ID</th>
+                    <th>店铺ID</th>
+                    <th>会员ID</th>
+                    <th>管理员ID</th>
+                    <th>订单总价</th>
+                    <th>当前状态</th>
+                    <th>支付状态</th>
+                    <th>下单时间</th>
                 </tr>
+            </thead>
+            <tbody>
                 {% for vo in orderlist %}
                 <tr>
-                  <td>{{ vo.id }}</td>
-                  <td>{{ vo.shop_id }}</td>
-                  <td>{{ vo.member_id }}</td> <td>{{ vo.user_id }}</td>
-                  <td>{{ vo.money }} 元</td> <td>
-                    {% if vo.status == 1 %}
-                      <span style="color:blue">进行中</span>
-                    {% elif vo.status == 2 %}
-                      <span style="color:red">无效</span>
-                    {% elif vo.status == 3 %}
-                      <span style="color:green">已完成</span>
-                    {% else %}
-                      <span style="color:grey">未知状态</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if vo.payment_status == 1 %}
-                      未支付
-                    {% elif vo.payment_status == 2 %}
-                      <span style="color:green">已支付</span>
-                    {% elif vo.payment_status == 3 %}
-                      <span style="color:orange">已退款</span>
-                    {% endif %}
-                  </td>
-                  <td>{{ vo.create_at|date:"Y-m-d H:i:s" }}</td>
+                    <td>{{ vo.id }}</td>
+                    <td>{{ vo.shop_id }}</td>
+                    <td>{{ vo.member_id }}</td>
+                    <td>{{ vo.user_id }}</td>
+                    <td style="font-weight: bold; color: #e67e22;">{{ vo.money }} 元</td>
+                    <td>
+                        {% if vo.status == 1 %}
+                            <span class="status-label status-info">进行中</span>
+                        {% elif vo.status == 2 %}
+                            <span class="status-label status-danger">无效</span>
+                        {% elif vo.status == 3 %}
+                            <span class="status-label status-success">已完成</span>
+                        {% else %}
+                            <span class="status-label" style="background:#eee;">未知</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if vo.payment_status == 1 %}
+                            <span style="color: #999;">未支付</span>
+                        {% elif vo.payment_status == 2 %}
+                            <span class="status-label status-success">已支付</span>
+                        {% elif vo.payment_status == 3 %}
+                            <span class="status-label status-warning">已退款</span>
+                        {% else %}
+                            <span style="color: #ccc;">-</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size: 12px; color: #666;">{{ vo.create_at|date:"Y-m-d H:i:s" }}</td>
                 </tr>
                 {% endfor %}
-              </table>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer clearfix">
-                <ul class="pagination pagination-sm no-margin pull-right">
-                    <li><a href="{% url 'myadmin_order_index' pIndex|add:-1 %}?{{mywhere|join:'&'}}">&laquo;</a></li>
-                    {% for p in plist %}
-                    <li {% if p == pIndex %}class="active"{% endif %}><a href="{% url 'myadmin_order_index' p %}?{{mywhere|join:'&'}}">{{p}}</a></li>
-                    {% endfor %}
-                    <li><a href="{% url 'myadmin_order_index' pIndex|add:1 %}?{{mywhere|join:'&'}}">&raquo;</a></li>
-                </ul>
-            </div>
-          </div>
-          <!-- /.box -->
-        </div>
-      </div>
+            </tbody>
+        </table>
+    </div>
 
-    </section>
-    <!-- /.content -->
+    <div class="table-header-tools" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; justify-content: flex-end;">
+        <div class="pagination">
+            <a href="{% url 'myadmin_order_index' pIndex|add:-1 %}?{{mywhere|join:'&'}}">&laquo;</a>
+            {% for p in plist %}
+                <a href="{% url 'myadmin_order_index' p %}?{{mywhere|join:'&'}}" 
+                   class="{% if p == pIndex %}current{% endif %}">
+                   {{p}}
+                </a>
+            {% endfor %}
+            <a href="{% url 'myadmin_order_index' pIndex|add:1 %}?{{mywhere|join:'&'}}">&raquo;</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

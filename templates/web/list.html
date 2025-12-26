@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>订单中心</title>
     <link rel="stylesheet" href="{% static 'web/css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'uploads/iconfont/font_h51zhavl2bf/iconfont.css' %}">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
@@ -65,7 +66,7 @@
             <div class="panel">
                 <div class="panel-head">
                     <div class="panel-title">订单管理</div>
-                    <a href="{{url}}" class="btn-mini">🔄 刷新列表</a>
+                    <a href="{{url}}" class="btn-mini"><span class="iconfont icon-refresh"></span> 刷新列表</a>
                 </div>
                 
                 <table class="modern-table">

@@ -18,7 +18,7 @@ def index(request, pIndex):
     # 获取、判断并封装keyword键搜索
     kw = request.GET.get("keyword", None)
     if kw:
-        clist = clist.filter(name__contain=kw)
+        clist = clist.filter(name__contains=kw)
         mywhere.append("keyword="+kw)
         
     # 获取、判断并封装状态status搜索条件

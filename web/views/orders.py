@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 # 订单的浏览界面
 def index(request, pIndex=1):
     omd = Orders.objects
+    #确保收银员智能看到自己的店铺
     shop_id = request.session['shopinfo']['id']
     mywhere = []
     orderlist = omd.filter(shop_id=shop_id)

@@ -1,88 +1,73 @@
 {% extends "myadmin/base.html" %}
 
-{% block main_body %}
-    <section class="content-header">
-      <h1>
-        账号管理
-        <small>订餐系统后台管理</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-        <li class="active">员工账号信息管理</li>
-      </ol>
-    </section>
+{% block content-header %}
+    账号管理 <small>编辑员工账号</small>
+{% endblock %}
 
-    <section class="content container-fluid">
-
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-                <h2 class="box-title"><span class="glyphicon glyphicon-calendar" aria-hidden="true">员工信息修改</h2>
+{% block content %}
+<div class="card">
+    <div class="content-header">
+        <h3 style="font-size: 18px;"> 员工信息修改</h3>
+    </div>
+    
+    <form action="{% url 'myadmin_user_update' user.id %}" method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">员工账号：</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="username" value="{{ user.username }}" class="form-control" disabled readonly style="background-color: #f9f9f9; cursor: not-allowed;">
             </div>
-            <form class="form-horizontal" action="{% url 'myadmin_user_update' user.id %}" method="post">
-                {% csrf_token %}
-              <div class="box-body">
-                <div class="form-group">
-                  <label for="inputEmail3" class="col-sm-2 control-label">员工账号：</label>
+        </div>
 
-                  <div class="col-sm-4">
-                    <input type="text" name="username" value="{{user.username}}" class="form-control" disabled readonly id="inputText1" placeholder="员工账号" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
+        <div class="form-group">
+            <label class="form-label">昵称：</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="nickname" value="{{ user.nickname }}" class="form-control" placeholder="请输入昵称" required>
+            </div>
+        </div>
 
-                  <div class="col-sm-4">
-                    <input type="text" name="nickname" value="{{user.nickname}}" class="form-control" id="inputText2" placeholder="昵称" />
-                  </div>
-                </div>
+        <div class="form-group">
+            <label class="form-label">重置密码：</label>
+            <div class="form-input-wrapper">
+                <input type="text" name="password" class="form-control" placeholder="留空则不修改密码">
+                <small style="color: #888; display: block; margin-top: 5px;">提示：如需修改密码请在此输入，否则请留空</small>
+            </div>
+        </div>
 
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">重置密码：</label>
-                  <div class="col-sm-4">
-                    <input type="text" name="password" class="form-control" placeholder="留空则不修改密码，输入新密码则重置" />
-                    <span style="color:#888; font-size:12px;">提示：如需修改密码请在此输入，否则请留空</span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputEmail3"  class="col-sm-2 control-label">添加时间：</label>
+        <div class="form-group">
+            <label class="form-label">添加时间：</label>
+            <div class="form-input-wrapper form-text-static">
+                {{ user.create_at|date:'Y-m-d H:i:s' }}
+            </div>
+        </div>
 
-                  <div class="col-sm-4">
-                    {{ user.create_at|date:'Y-m-d H:i:s' }}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputEmail3" class="col-sm-2 control-label">修改时间：</label>
+        <div class="form-group">
+            <label class="form-label">修改时间：</label>
+            <div class="form-input-wrapper form-text-static">
+                {{ user.update_at|date:'Y-m-d H:i:s' }}
+            </div>
+        </div>
 
-                  <div class="col-sm-4">
-                    {{ user.update_at|date:'Y-m-d H:i:s' }}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">当前状态：</label>
-                  <div class="controls">
-                    &nbsp; &nbsp;
-                    <input type="radio" name="status" class="input-xlarge" value="1" 
-                    {% if user.status == 1 %}checked{% endif %} /> 正常
-                     &nbsp; &nbsp; 
-                    <input type="radio" name="status" class="input-xlarge" value="2" 
-                    {% if user.status == 2 %}checked{% endif %} /> 禁用
-                     &nbsp; &nbsp; 
-                    <input type="radio" name="status" class="input-xlarge" value="6" 
-                    {% if user.status == 6 %}checked{% endif %} /> 管理员
-                  </div>
-                </div>
-              </div>
-              <div class="box-footer">
-                <div class="col-sm-offset-2 col-sm-10">
-                  <button type="submit" class="btn btn-primary">保存</button> &nbsp; 
-                  <button type="reset" class="btn btn-default">重置</button>
-                </div> </div>
-              </form>
-          </div>
-          </div>
-      </div>
+        <div class="form-group">
+            <label class="form-label">当前状态：</label>
+            <div class="form-input-wrapper radio-group">
+                <label>
+                    <input type="radio" name="status" value="1" {% if user.status == 1 %}checked{% endif %}> 正常
+                </label>
+                <label>
+                    <input type="radio" name="status" value="2" {% if user.status == 2 %}checked{% endif %}> 禁用
+                </label>
+                <label>
+                    <input type="radio" name="status" value="6" {% if user.status == 6 %}checked{% endif %}> 管理员
+                </label>
+            </div>
+        </div>
 
-    </section>
-    {% endblock %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">保存修改</button>
+            <button type="reset" class="btn" style="background-color: #eee;">重置</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

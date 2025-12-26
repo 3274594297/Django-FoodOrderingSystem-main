@@ -1,0 +1,42 @@
+/* static/myadmin/css/login.css */
+body { 
+    background-color: #e9ecef; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    font-family: sans-serif; 
+    margin: 0;
+}
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+}
+.login-box h2 { margin-bottom: 20px; color: #333; }
+.form-group { margin-bottom: 15px; text-align: left; }
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+}
+.btn-submit {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn-submit:hover { background-color: #0056b3; }
+.error-msg { color: red; margin-bottom: 15px; font-size: 14px; }
+.verify-row { display: flex; gap: 10px; }
+.verify-img { cursor: pointer; height: 38px; border: 1px solid #ddd; border-radius: 4px; }

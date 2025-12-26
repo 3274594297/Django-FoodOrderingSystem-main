@@ -1,16 +1,25 @@
 {% extends "myadmin/base.html" %}
 
-{% block main_body %}                
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h4>
-        信息提示:
-      </h4>
-    </section>
+{% block content-header %}
+    信息提示
+{% endblock %}
 
-    <div class="pad margin no-print">
-      <div class="callout callout-info" style="margin-bottom: 0!important;padding-left: 50px">
-        <h3><i class="fa fa-exclamation-triangle"></i>  &nbsp; {{ info }}</h3>
-      </div>
+{% block content %}
+<div class="card">
+    <div class="callout callout-info">
+        <h3>
+            <span class="iconfont icon-tongzhi"></span> 
+            {{ info }}
+        </h3>
     </div>
+    
+    <div style="margin-top: 20px; padding-left: 40px;">
+        <a href="javascript:history.back();" class="btn" style="background: #eee; border: 1px solid #ccc; color: #333;">
+            <span class="iconfont icon-fanhui"></span> 返回上一页
+        </a>
+        <a href="{% url 'myadmin_index' %}" class="btn btn-primary" style="margin-left: 10px;">
+            <span class="iconfont icon-shouye"></span> 回到首页
+        </a>
+    </div>
+</div>
 {% endblock %}

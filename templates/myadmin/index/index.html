@@ -1,70 +1,47 @@
 {% extends 'myadmin/base.html' %}
 
-{% block main_body %}
-    <section class="content-header">
-      <h1>
-        首页
-        <small>订餐系统后台管理</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
-    </section>
+{% block content-header %}
+    首页 <small>订餐系统后台管理</small>
+{% endblock %}
 
-    <section class="content container-fluid">
-      <div class="row">
-        <div class="col-lg-3 col-xs-6">
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h3>{{ order_count }}</h3>
-              <p>新订单</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="{% url 'myadmin_order_index' 1 %}?status=1" class="small-box-footer">
-              更多信息 <i class="fa fa-arrow-circle-right"></i>
-            </a>
-          </div>
+{% block content %}
+<div class="dashboard-grid">
+    <div class="stat-card bg-aqua">
+        <div class="inner">
+            <h3>{{ order_count|default:"0" }}</h3>
+            <p>新订单</p>
         </div>
-        <div class="col-lg-3 col-xs-6">
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3>{{ product_count }}</h3>
-              <p>菜品总量</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="{% url 'myadmin_product_index' 1 %}" class="small-box-footer">更多信息 <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>{{ member_count }}</h3>
-              <p>用户注册</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-            <a href="{% url 'myadmin_member_index' 1 %}" class="small-box-footer">更多信息 <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>{{ shop_count }}</h3>
-              <p>商铺总量</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="{% url 'myadmin_shop_index' 1 %}" class="small-box-footer">更多信息 <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        </div>
+        <a href="{% url 'myadmin_order_index' 1 %}?status=1" class="footer">更多信息 ➜</a>
+    </div>
 
-    </section>
-    {% endblock %}
+    <div class="stat-card bg-green">
+        <div class="inner">
+            <h3>{{ product_count|default:"0" }}</h3>
+            <p>菜品总量</p>
+        </div>
+        <a href="{% url 'myadmin_product_index' 1 %}" class="footer">更多信息 ➜</a>
+    </div>
+
+    <div class="stat-card bg-yellow">
+        <div class="inner">
+            <h3>{{ member_count|default:"0" }}</h3>
+            <p>用户注册</p>
+        </div>
+        <a href="{% url 'myadmin_member_index' 1 %}" class="footer">更多信息 ➜</a>
+    </div>
+
+    <div class="stat-card bg-red">
+        <div class="inner">
+            <h3>{{ shop_count|default:"0" }}</h3>
+            <p>商铺总量</p>
+        </div>
+        <a href="{% url 'myadmin_shop_index' 1 %}" class="footer">更多信息 ➜</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>系统公告</h3>
+    <hr class="light">
+    <p>欢迎登录订餐系统后台管理界面。当前系统运行正常。</p>
+</div>
+{% endblock %}

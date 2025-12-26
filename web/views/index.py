@@ -7,6 +7,8 @@ def index(request):
     # return HttpResponse('欢迎进入大堂点餐前台首页！')
     return redirect(reverse('web_index'))
 
+
+##购物车状态管理
 def webindex(request):
     cartlist = request.session.get('cartlist', {})
     total_money = 0
@@ -24,21 +26,24 @@ def login(request):
     return render(request, "web/login.html", context)
 
 # 提交登录表单
+# 登录与校验
 def dologin(request):
     try:
-        if request.POST["shop_id"] == "0":
+        if request.POST["shop_id"] == "0": #拦截
             return redirect(reverse('web_login')+"?typeinfo=1")  # 直接重定向
+        # 用户的code和数据库中的session里面对比，不一致打回
         if request.POST["code"] != request.session['verifycode']:
             # context = {"info":"验证码不正确！"}
             return redirect(reverse('web_login')+"?typeinfo=2")  # 直接重定向
+        # 查看用户存在
         user = User.objects.get(username=request.POST['username'])
-        if user.status == 6 or user.status == 1:
+        if user.status == 6 or user.status == 1:#验证登陆人员身份 1.普通员工  6.管理员    9.已删除人员
             import hashlib
             md5 = hashlib.md5()
-            n = user.password_salt
-            s = request.POST['pass'] + str(n)
-            md5.update(s.encode('utf-8'))
-            if user.password_hash == md5.hexdigest():
+            n = user.password_salt #盐值
+            s = request.POST['pass'] + str(n) #拼接
+            md5.update(s.encode('utf-8'))  #进行计算
+            if user.password_hash == md5.hexdigest():  #比较
                 request.session['webuser'] = user.toDict()
                 
                 # 获取当前店铺信息
@@ -91,7 +96,7 @@ def verify(request):
     #创建画笔对象
     draw = ImageDraw.Draw(im)
     #调用画笔的point()函数绘制噪点
-    for i in range(0, 100):
+    for i in range(0, 100): 
         xy = (random.randrange(0, width), random.randrange(0, height))
         fill = (random.randrange(0, 255), 255, random.randrange(0, 255))
         draw.point(xy, fill=fill)
