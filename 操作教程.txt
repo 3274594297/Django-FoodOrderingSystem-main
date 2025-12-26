@@ -1,0 +1,35 @@
+1.打开vscode
+	进入根文件夹的终端   如果没进去就通过   cd 路径 进入
+2.创建虚拟环境 
+	python -m venv venv
+	运行之后会出现venv整个文件夹
+	venv\Scripts\activate.bat
+	激活它
+	终端会变成（venv）开头
+3.安装依赖库
+	pip install -r requirements.txt
+	python -m pip install --upgrade pip（可以选择更新pip,个人感觉可更可不更，没报错就不用管）
+	注意：python版本最好在3.10左右，太高的适配不了
+4.打开一个新的cmd（原来的不要删除）
+	mysql -u root -p
+	进入数据库，输入自己的密码
+	成功之后你的终端前缀会变成
+ 	mysql>
+	接着先删除旧的数据库
+	DROP DATABASE IF EXISTS osdb;
+
+	创建一个新的名字为osdb的数据库
+	CREATE DATABASE osdb CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+	
+	退出
+	EXIT
+
+	继续在整个终端中运行
+	mysql -u root -p osdb < 路径.osdb.sql
+	比如我的是mysql -u root -p osdb < D:\Django-FoodOrderingSystem-main\osdb.sql
+	导入完成之后就是我们几个初设的数据了
+
+	打开myobject\settings.py 整个文件
+	找到DATEBASE  ，把USER ; PASSWORD;改成自己的
+4.回到最初的虚拟环境（venv开头）
+	python manage.py runserver
