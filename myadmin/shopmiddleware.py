@@ -33,18 +33,6 @@ class ShopMiddleware(object):
             if "webuser" not in request.session:
                 # 执行登录界面跳转
                 return redirect(reverse('web_login'))
-            
-        
-        
-        # 移动端的登录验证
-        # 定义网站后台不用登录也可访问的路由url
-        mobile_urllist = ['/mobile/register','/mobile/doregister']
-        # 判断当前请求是否是访问网站后台,并且path不在urllist中
-        if re.match(r"^/mobile",path) and (path not in mobile_urllist):
-            # 判断当前用户是否没有登录
-            if "mobileuser" not in request.session:
-                # 执行登录界面跳转
-                return redirect(reverse('mobile_register'))
         
 
 
