@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.DeleteModel(
-            name='Order',
+            name='Orders',
         ),
         migrations.AlterField(
             model_name='category',

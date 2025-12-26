@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Order',
+            name='Orders',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('shop_id', models.IntegerField()),
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 ('create_at', models.DateTimeField(default=datetime.datetime.now)),
             ],
             options={
-                'db_table': 'order',
+                'db_table': 'orders',
             },
         ),
         migrations.CreateModel(
