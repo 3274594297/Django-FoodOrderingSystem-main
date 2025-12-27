@@ -1,3 +1,16 @@
+需要的工具：
+     vscode 或 pycharm，Python版本建议3.10。过高或者过低或出现适配问题
+     MySQL，建议跟着b站up主沧澜sincerely的视频安装
+     datagrip 数据库可视化工具
+
+
+
+
+
+
+
+
+
 1.打开vscode
 	进入根文件夹的终端   如果没进去就通过   cd 路径 进入
 2.创建虚拟环境 
